@@ -24,19 +24,21 @@ module.exports = React.createClass({
         var self = this;
         self.socket = io.connect(this.props.socketUrl);
 
-        self.socket.on('serverChatMessage', function (message) {
-            self.addMessage(message);
+        self.socket.on('chat', function (data) {
+            self.addMessage(data);
         });
     },
-    postComment: function(comment){
-        this.socket.emit('clientChatMessage', { comment: comment });
+    postComment: function(messageIn){
+        this.socket.emit('Chat_send', { message: messageIn }, function (data) {
+            console.log(data);
+        });
     },
     render: function(){
         return(
             <div>
                 {this.state.messages.map(function(message){
                     return(<p key={message.key}>
-                                {message.comment}
+                                {message.message}
                             </p>);
                 })}
                 <ChatForm
